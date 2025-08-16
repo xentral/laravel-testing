@@ -21,9 +21,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
         );
     }
 
-    protected function setUpDatabase($app): void
-    {
-    }
+    protected function setUpDatabase($app): void {}
 
     protected function getPackageProviders($app): array
     {

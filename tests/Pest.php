@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
-use Xentral\LaravelTesting\Tests\TestCase;
 use Illuminate\Http\Request;
+use Xentral\LaravelTesting\Tests\TestCase;
 
 uses(TestCase::class)->in(__DIR__.'/Feature');
 
