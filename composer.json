@@ -16,15 +16,16 @@
     ],
     "require": {
         "php": "^8.2",
+        "behat/behat": "^3.14",
+        "driftingly/rector-laravel": "^2.0",
         "illuminate/console": "^10.0|^11.0|^12.0",
-        "illuminate/validation": "^10.0|^11.0|^12.0",
         "illuminate/http": "^10.0|^11.0|^12.0",
         "illuminate/support": "^10.0|^11.0|^12.0",
+        "illuminate/validation": "^10.0|^11.0|^12.0",
+        "jonathanjfshaw/phpunitbehat": "^0.21.0",
         "kirschbaum-development/laravel-openapi-validator": "^1.0",
         "phpunit/phpunit": "^10.5 || ^11.5",
-        "behat/behat": "^3.14",
-        "jonathanjfshaw/phpunitbehat": "^0.21.0",
-        "driftingly/rector-laravel": "^2.0",
+        "qase/phpunit-reporter": "^2.1",
         "rector/rector": "^2.1"
     },
     "require-dev": {
