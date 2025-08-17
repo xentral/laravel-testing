@@ -1,6 +1,7 @@
 <?php declare(strict_types=1);
 
 use Xentral\LaravelTesting\OpenApi\Attributes\SchemaFile;
+use Xentral\LaravelTesting\Utils;
 
 it('can be instantiated with file path', function () {
     $filePath = '/path/to/schema.json';
@@ -10,13 +11,8 @@ it('can be instantiated with file path', function () {
 });
 
 it('can be used as attribute on classes', function () {
-    $reflection = new ReflectionClass(TestClassWithSchemaFile::class);
-    $attributes = $reflection->getAttributes(SchemaFile::class);
-
-    expect($attributes)->toHaveCount(1);
-
-    $instance = $attributes[0]->newInstance();
-    expect($instance->filePath)->toBe('/path/to/test-schema.json');
+    $attribute = Utils::getAttribute(TestClassWithSchemaFile::class, SchemaFile::class);
+    expect($attribute->filePath)->toBe('/path/to/test-schema.json');
 });
 
 it('is readonly class', function () {
