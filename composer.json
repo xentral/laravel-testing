@@ -56,7 +56,7 @@
         "pint": "vendor/bin/pint",
         "pest": "vendor/bin/pest",
         "test:coverage": "vendor/bin/pest --coverage-html coverage",
-        "pest:ci": "vendor/bin/pest --coverage-clover coverage.xml",
+        "test:ci": "vendor/bin/pest --coverage-clover coverage.xml",
         "phpstan:analyse": "vendor/bin/phpstan analyse --ansi --memory-limit=4G",
         "phpstan:baseline": "vendor/bin/phpstan analyse --generate-baseline --memory-limit=4G",
         "rector": "vendor/bin/rector",
