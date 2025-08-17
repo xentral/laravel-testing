@@ -104,7 +104,7 @@ protected function isAccessible(User $user, ?string $path = null): bool
 
 ## Testing conventions
 
-- Use PHPUnit for proper testing.
+- Use pest to write tests.
 - Prefer database backed integration tests over unit tests.
 - Each Eloquent model has to have a fully configured DatabaseFactory for a easier way of testing implementations.
 - Enrich factories with modifiers to enable easy customisations.
