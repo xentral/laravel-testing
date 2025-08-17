@@ -16,6 +16,8 @@ trait HasBehatFeature
     use ProvidesBehatHttpMatchers;
     use ProvidesBehatModelMatchers;
 
+    public static string $feature = '';
+
     /**
      * Data provider for the behat feature test.
      *
