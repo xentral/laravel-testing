@@ -2,26 +2,23 @@
 
 namespace Xentral\LaravelTesting\Tests;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Workbench\App\Http\Controller\TestController;
 use Xentral\LaravelTesting\TestingServiceProvider;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
-    use DatabaseMigrations;
+    use RefreshDatabase;
 
-    protected function setUp(): void
+    protected function defineDatabaseMigrations(): void
     {
-        parent::setUp();
-
-        $this->setUpDatabase($this->app);
-
-        Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'Xentral\\LaravelTesting\\Database\\Factories\\'.class_basename($modelName).'Factory'
-        );
+        $this->loadMigrationsFrom(__DIR__.'/../workbench/database/migrations');
     }
 
-    protected function setUpDatabase($app): void {}
+    protected function defineWebRoutes($router): void
+    {
+        $router->get('/api/v1/test-models', [TestController::class, 'index']);
+    }
 
     protected function getPackageProviders($app): array
     {

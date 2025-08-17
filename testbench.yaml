@@ -1,7 +1,0 @@
-laravel: '@testbench'
-
-providers:
-   - Xentral\LaravelTesting\TestingServiceProvider
-   - Xentral\LaravelTesting\Tests\WorkbenchServiceProvider
-   - Laravel\Boost\BoostServiceProvider
-   - Laravel\Mcp\Server\McpServiceProvider

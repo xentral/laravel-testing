@@ -43,7 +43,10 @@
     "autoload-dev": {
         "psr-4": {
             "Xentral\\LaravelTesting\\Tests\\": "tests",
-            "Xentral\\LaravelTesting\\Database\\Factories\\": "database/factories"
+            "Xentral\\LaravelTesting\\Database\\Factories\\": "database/factories",
+            "Workbench\\App\\": "workbench/app/",
+            "Workbench\\Database\\Factories\\": "workbench/database/factories/",
+            "Workbench\\Database\\Seeders\\": "workbench/database/seeders/"
         }
     },
     "scripts": {
@@ -53,7 +56,14 @@
         "pest:ci": "vendor/bin/pest --coverage-clover coverage.xml",
         "phpstan:analyse": "vendor/bin/phpstan analyse --ansi --memory-limit=4G",
         "phpstan:baseline": "vendor/bin/phpstan analyse --generate-baseline --memory-limit=4G",
-        "rector": "vendor/bin/rector"
+        "rector": "vendor/bin/rector",
+        "lint": [
+            "@php vendor/bin/pint --ansi",
+            "@php vendor/bin/phpstan analyse --verbose --ansi"
+        ],
+        "test": [
+            "@php vendor/bin/pest"
+        ]
     },
     "config": {
         "sort-packages": true,
