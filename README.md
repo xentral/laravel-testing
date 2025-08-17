@@ -12,7 +12,7 @@ testing, and Qase test reporting integration.
 You can install the package via composer.
 
 ```bash
-composer require xentral/laravel-testing
+composer --dev require xentral/laravel-testing
 ```
 
 ## Usage
