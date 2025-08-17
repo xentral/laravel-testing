@@ -2,14 +2,16 @@
 
 namespace Xentral\LaravelTesting\Behat\Traits;
 
+use PHPUnitBehat\TestTraits\BehatProvidingTrait;
 use PHPUnitBehat\TestTraits\BehatScenarioTestingTrait;
 use Xentral\LaravelTesting\Behat\Attributes\FeatureFile;
-use Xentral\LaravelTesting\Behat\BehatFeatureProvider;
+use Xentral\LaravelTesting\Behat\BehatFeatureParser;
 use Xentral\LaravelTesting\Qase\CustomQaseReporter;
 use Xentral\LaravelTesting\Utils;
 
 trait HasBehatFeature
 {
+    use BehatProvidingTrait;
     use BehatScenarioTestingTrait;
     use ProvidesBehatHttpMatchers;
     use ProvidesBehatModelMatchers;
@@ -22,21 +24,17 @@ trait HasBehatFeature
      */
     public static function featureProvider(): array
     {
-        $featureFileAttribute = Utils::getAttribute(static::class, FeatureFile::class);
-        if ($featureFileAttribute instanceof FeatureFile) {
-            return BehatFeatureProvider::provideFeatureFromFile($featureFileAttribute->filePath);
-        }
         // First we check for the convention of having a .feature file next to the test with the same name
         $ref = new \ReflectionClass(static::class);
         $featureFilePath = str_replace('.php', '.feature', $ref->getFileName());
         if (file_exists($featureFilePath)) {
-            return BehatFeatureProvider::provideFeatureFromFile($featureFilePath);
+            return static::provideBehatFeature(BehatFeatureParser::parseFile($featureFilePath));
         }
         // If no .feature file is found, we check for the FeatureFile attribute
-        if ($featureFilePath) {
-            return BehatFeatureProvider::provideFeatureFromFile($featureFilePath);
+        $featureFileAttribute = Utils::getAttribute(static::class, FeatureFile::class);
+        if ($featureFileAttribute instanceof FeatureFile) {
+            return static::provideBehatFeature(BehatFeatureParser::parseFile($featureFileAttribute->filePath));
         }
-
         // If no FeatureFile attribute is found, use the static::$feature property.
         // If that is also not available, we bail
         if (empty(static::$feature)) {
@@ -44,7 +42,7 @@ trait HasBehatFeature
         }
 
         // If no FeatureFile attribute is found, use the static::$feature property.
-        return BehatFeatureProvider::provideFeatureFromString(static::$feature);
+        return static::provideBehatFeature(BehatFeatureParser::parse(static::$feature));
     }
 
     public function executeScenario($scenario, $feature): void

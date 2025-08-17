@@ -18,7 +18,12 @@ class BehatFeatureParser
         return $feature;
     }
 
-    public static function getBehatDefaultKeywords()
+    public static function parseFile(string $filePath): FeatureNode
+    {
+        return static::parse(file_get_contents($filePath));
+    }
+
+    public static function getBehatDefaultKeywords(): ArrayKeywords
     {
         return new ArrayKeywords([
             'en' => [
