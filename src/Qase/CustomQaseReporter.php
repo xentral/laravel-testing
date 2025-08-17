@@ -18,17 +18,9 @@ class CustomQaseReporter implements QaseReporterInterface
 
     private array $testResults = [];
 
-    private AttributeParserInterface $attributeParser;
-
-    private ReporterInterface $reporter;
-
     private ?string $currentKey = null;
 
-    private function __construct(AttributeParserInterface $attributeParser, ReporterInterface $reporter)
-    {
-        $this->attributeParser = $attributeParser;
-        $this->reporter = $reporter;
-    }
+    private function __construct(private readonly AttributeParserInterface $attributeParser, private readonly ReporterInterface $reporter) {}
 
     public static function getInstance(AttributeParserInterface $attributeParser, ReporterInterface $reporter): CustomQaseReporter
     {

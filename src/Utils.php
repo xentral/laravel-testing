@@ -5,8 +5,8 @@ namespace Xentral\LaravelTesting;
 class Utils
 {
     /**
-     * @param  string<class-string>  $className
-     * @param  string<class-string>  $attributeName
+     * @param  class-string  $className
+     * @param  class-string  $attributeName
      */
     public static function getAttribute(string $className, string $attributeName): mixed
     {

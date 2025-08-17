@@ -32,6 +32,7 @@
         "larastan/larastan": "^3.5",
         "laravel/boost": "^1.0",
         "laravel/pint": "^1.8",
+        "nunomaduro/collision": "^8.8",
         "orchestra/pest-plugin-testbench": "^3.2",
         "orchestra/testbench": "^9.14",
         "pestphp/pest": "^3.7",
@@ -60,11 +61,12 @@
         "phpstan:baseline": "vendor/bin/phpstan analyse --generate-baseline --memory-limit=4G",
         "rector": "vendor/bin/rector",
         "lint": [
-            "@php vendor/bin/pint --ansi",
-            "@php vendor/bin/phpstan analyse --verbose --ansi"
+            "@php vendor/bin/pint",
+            "@php vendor/bin/phpstan analyse --verbose --ansi",
+            "@php vendor/bin/rector"
         ],
         "test": [
-            "@php vendor/bin/pest"
+            "@php artisan package:test --parallel"
         ]
     },
     "config": {

@@ -6,7 +6,7 @@ namespace Xentral\LaravelTesting\Behat;
 use Behat\Gherkin\Node\FeatureNode;
 use Behat\Gherkin\Node\OutlineNode;
 use Behat\Gherkin\Node\PyStringNode;
-use Behat\Gherkin\Node\ScenarioNode;
+use Behat\Gherkin\Node\ScenarioInterface;
 use Behat\Gherkin\Node\TableNode;
 
 class BehatDumper
@@ -28,7 +28,7 @@ class BehatDumper
         return implode("\n", $lines)."\n";
     }
 
-    public static function dumpScenario(ScenarioNode|OutlineNode $scenario, int $currentIndentation = 0): string
+    public static function dumpScenario(ScenarioInterface $scenario, int $currentIndentation = 0): string
     {
         $lines[] = '';
 

@@ -89,7 +89,7 @@ trait ProvidesBehatHttpMatchers
                     'value' => $row['value'],
                 ];
             }
-            $path .= (str_contains($path, '?') ? '&' : '?').http_build_query(['filter' => $filters]);
+            $path .= (str_contains((string) $path, '?') ? '&' : '?').http_build_query(['filter' => $filters]);
         }
 
         $this->currentResponse = $this->json($method, $path, $payload ?? [], $headers);

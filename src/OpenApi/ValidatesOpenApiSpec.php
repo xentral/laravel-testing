@@ -28,7 +28,7 @@ trait ValidatesOpenApiSpec
     {
         if ($this->schemaFilePath) {
             $schemaFilePath = $this->schemaFilePath;
-            if (! str_starts_with($schemaFilePath, '/')) {
+            if (! str_starts_with((string) $schemaFilePath, '/')) {
                 $schemaFilePath = config('testing.openapi.schema_base_path').'/'.$schemaFilePath;
             }
 
