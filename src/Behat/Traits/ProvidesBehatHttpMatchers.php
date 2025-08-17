@@ -95,7 +95,7 @@ trait ProvidesBehatHttpMatchers
         $this->currentResponse = $this->json($method, $path, $payload ?? [], $headers);
     }
 
-    #[Then('/^the response (?:status|code|status code) should be(?: equal to| )(\d+)$/')]
+    #[Then('/^the response (?:status|code|status code) should be(?: equal to | )(\d+)$/')]
     public function theResponseStatusShouldBe(int $statusCode): void
     {
         $this->currentResponse?->assertStatus($statusCode);
