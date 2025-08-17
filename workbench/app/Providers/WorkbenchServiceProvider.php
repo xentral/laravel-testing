@@ -3,13 +3,18 @@
 namespace Workbench\App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Laravel\Boost\Install\GuidelineComposer;
+use Workbench\App\PackageGuidelineComposer;
 
 class WorkbenchServiceProvider extends ServiceProvider
 {
     /**
      * Register services.
      */
-    public function register(): void {}
+    public function register(): void
+    {
+        $this->app->bind(GuidelineComposer::class, PackageGuidelineComposer::class);
+    }
 
     /**
      * Bootstrap services.

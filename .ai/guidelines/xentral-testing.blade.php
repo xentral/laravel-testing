@@ -1,6 +1,6 @@
 # Testing conventions
 
-- Use PHPUnit for proper testing.
+- Check the project conventions to use whether PHPUnit or Pest
 - Prefer database backed integration tests over unit tests.
 - Each Eloquent model has to have a fully configured DatabaseFactory for a easier way of testing implementations.
 - Enrich factories with modifiers to enable easy customisations.
