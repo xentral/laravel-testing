@@ -8,6 +8,7 @@ use Behat\Step\Then;
 use Behat\Step\When;
 use Illuminate\Testing\TestResponse;
 use PHPUnit\Framework\TestCase;
+use Xentral\LaravelTesting\Behat\Attributes\Example;
 use Xentral\LaravelTesting\OpenApi\ValidatesOpenApiSpec;
 
 trait ProvidesBehatHttpMatchers
@@ -18,6 +19,13 @@ trait ProvidesBehatHttpMatchers
     protected ?TestResponse $currentResponse = null;
 
     #[When('/^I send (a|an invalid|a non-API) ([^\s]+) request to path (from last response location header|[^\s]+)(?:\s+(?P<mods>(?:(?:with|and)\s+(?:(?:Accept|ContentType|Content-Type)\s+[^\s]+|payload|filters))(?:\s+(?:with|and)\s+(?:(?:Accept|ContentType|Content-Type)\s+[^\s]+|payload|filters))*))?$/i')]
+    #[Example('I send a GET request to path /api/users', ['a', 'GET', '/api/users'])]
+    #[Example('I send a POST request to path /api/users with payload', ['a', 'POST', '/api/users', 'with payload'], ['name' => 'John Doe', 'email' => 'john@example.com'])]
+    #[Example('I send a GET request to path /api/users with filters', ['a', 'GET', '/api/users', 'with filters'], [['key' => 'status', 'operator' => '=', 'value' => 'active']])]
+    #[Example('I send an invalid POST request to path /api/users with payload', ['an invalid', 'POST', '/api/users', 'with payload'], ['invalid_field' => 'test'])]
+    #[Example('I send a non-API GET request to path /api/users', ['a non-API', 'GET', '/api/users'])]
+    #[Example('I send a GET request to path /api/users with Accept application/json', ['a', 'GET', '/api/users', 'with Accept application/json'])]
+    #[Example('I send a POST request to path from last response location header', ['a', 'POST', 'from last response location header'])]
     public function iSendARequest(
         string $invalid,
         string $method,
@@ -96,12 +104,14 @@ trait ProvidesBehatHttpMatchers
     }
 
     #[Then('/^the response (?:status|code|status code) should be(?: equal to | )(\d+)$/')]
+    #[Example('the response status should be 200', ['200'])]
     public function theResponseStatusShouldBe(int $statusCode): void
     {
         $this->currentResponse?->assertStatus($statusCode);
     }
 
     #[Then('the response should contain the following properties')]
+    #[Example('the response should contain the following properties', [['path' => 'data.id', 'value' => '123'], ['path' => 'data.name', 'value' => 'John Doe']])]
     public function theResponseShouldContain(TableNode $table): void
     {
         foreach ($this->parseTable($table) as $row) {
@@ -126,6 +136,8 @@ trait ProvidesBehatHttpMatchers
     }
 
     #[Then('/^the response ([^\s]+) header should match ([^$]+)$/')]
+    #[Example('the response Content-Type header should match application/json', ['Content-Type', 'application/json'])]
+    #[Example('the response Location header should match /api/users/123', ['Location', '/api/users/123'])]
     public function theResponseHeaderShouldMatch(string $header, string $value): void
     {
         TestCase::assertNotNull($this->currentResponse, 'No response available to check headers.');
