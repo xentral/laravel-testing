@@ -14,7 +14,7 @@ use Qase\PHPUnitReporter\QaseReporterInterface;
 
 class CustomQaseReporter implements QaseReporterInterface
 {
-    private static ?CustomQaseReporter $instance;
+    private static ?CustomQaseReporter $instance = null;
 
     private array $testResults = [];
 

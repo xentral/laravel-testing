@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Xentral\LaravelTesting\Behat;
 
+use Behat\Gherkin\Node\FeatureNode;
 use Behat\Gherkin\Node\OutlineNode;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\ScenarioNode;
@@ -10,9 +11,25 @@ use Behat\Gherkin\Node\TableNode;
 
 class BehatDumper
 {
-    public static function dumpScenario(ScenarioNode|OutlineNode $scenario): string
+    public static function dumpFeature(FeatureNode $featureNode): string
     {
         $currentIndentation = 0;
+
+        $lines = [];
+        $lines[] = self::print('Feature: '.$featureNode->getTitle(), $currentIndentation);
+        $currentIndentation++;
+        if ($description = $featureNode->getDescription()) {
+            $lines[] = self::print($description, $currentIndentation);
+        }
+        foreach ($featureNode->getScenarios() as $scenario) {
+            $lines[] = self::dumpScenario($scenario, $currentIndentation);
+        }
+
+        return implode("\n", $lines)."\n";
+    }
+
+    public static function dumpScenario(ScenarioNode|OutlineNode $scenario, int $currentIndentation = 0): string
+    {
         $lines[] = '';
 
         if ($scenario->getTags()) {

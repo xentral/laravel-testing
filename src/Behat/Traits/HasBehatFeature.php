@@ -2,15 +2,14 @@
 
 namespace Xentral\LaravelTesting\Behat\Traits;
 
-use PHPUnitBehat\TestTraits\BehatProvidingTrait;
 use PHPUnitBehat\TestTraits\BehatScenarioTestingTrait;
 use Xentral\LaravelTesting\Behat\Attributes\FeatureFile;
+use Xentral\LaravelTesting\Behat\BehatFeatureProvider;
 use Xentral\LaravelTesting\Qase\CustomQaseReporter;
 use Xentral\LaravelTesting\Utils;
 
 trait HasBehatFeature
 {
-    use BehatProvidingTrait;
     use BehatScenarioTestingTrait;
     use ProvidesBehatHttpMatchers;
     use ProvidesBehatModelMatchers;
@@ -25,19 +24,17 @@ trait HasBehatFeature
     {
         $featureFileAttribute = Utils::getAttribute(static::class, FeatureFile::class);
         if ($featureFileAttribute instanceof FeatureFile) {
-            return static::provideBehatFeature(static::parseBehatFeature(file_get_contents($featureFileAttribute->filePath)));
+            return BehatFeatureProvider::provideFeatureFromFile($featureFileAttribute->filePath);
         }
         // First we check for the convention of having a .feature file next to the test with the same name
         $ref = new \ReflectionClass(static::class);
         $featureFilePath = str_replace('.php', '.feature', $ref->getFileName());
         if (file_exists($featureFilePath)) {
-            return static::provideBehatFeature(static::parseBehatFeature(file_get_contents($featureFilePath)));
+            return BehatFeatureProvider::provideFeatureFromFile($featureFilePath);
         }
         // If no .feature file is found, we check for the FeatureFile attribute
         if ($featureFilePath) {
-            $feature = static::parseBehatFeature(file_get_contents($featureFilePath));
-
-            return static::provideBehatFeature($feature);
+            return BehatFeatureProvider::provideFeatureFromFile($featureFilePath);
         }
 
         // If no FeatureFile attribute is found, use the static::$feature property.
@@ -47,7 +44,7 @@ trait HasBehatFeature
         }
 
         // If no FeatureFile attribute is found, use the static::$feature property.
-        return static::provideBehatFeature(static::parseBehatFeature(static::$feature));
+        return BehatFeatureProvider::provideFeatureFromString(static::$feature);
     }
 
     public function executeScenario($scenario, $feature): void

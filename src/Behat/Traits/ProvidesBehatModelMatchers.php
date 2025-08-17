@@ -19,13 +19,13 @@ trait ProvidesBehatModelMatchers
 
     protected function guessModelFactory(string $model): Factory
     {
-        // Convert to singular if the model name is plural
-        $singular = Str::singular($model);
+        $singular = Str::studly(Str::singular($model));
 
-        // Ensure proper capitalization
-        $singular = Str::studly($singular);
+        $methodName = 'get'.$singular.'Factory';
+        if (method_exists($this, $methodName)) {
+            return call_user_func([$this, $methodName]);
+        }
 
-        // Try different common namespaces
         $possibleNamespaces = [
             'App\\Models\\',
         ];

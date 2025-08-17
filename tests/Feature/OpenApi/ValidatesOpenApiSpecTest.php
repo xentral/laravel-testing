@@ -7,7 +7,7 @@ use Xentral\LaravelTesting\OpenApi\ValidatesOpenApiSpec;
 uses(ValidatesOpenApiSpec::class);
 
 beforeEach(function () {
-    $this->schemaFilePath(dirname(__DIR__).'/schemas/test-models.json');
+    $this->schemaFilePath(dirname(__DIR__, 2).'/schemas/test-models.json');
 });
 
 test('endpoint returns valid response with empty data', function () {
