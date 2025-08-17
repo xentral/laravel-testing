@@ -6,6 +6,7 @@ use PHPUnitBehat\TestTraits\BehatProvidingTrait;
 use PHPUnitBehat\TestTraits\BehatScenarioTestingTrait;
 use Xentral\LaravelTesting\Behat\Attributes\FeatureFile;
 use Xentral\LaravelTesting\Qase\CustomQaseReporter;
+use Xentral\LaravelTesting\Utils;
 
 trait HasBehatFeature
 {
@@ -22,6 +23,10 @@ trait HasBehatFeature
      */
     public static function featureProvider(): array
     {
+        $featureFileAttribute = Utils::getAttribute(static::class, FeatureFile::class);
+        if ($featureFileAttribute instanceof FeatureFile) {
+            return static::provideBehatFeature(static::parseBehatFeature(file_get_contents($featureFileAttribute->filePath)));
+        }
         // First we check for the convention of having a .feature file next to the test with the same name
         $ref = new \ReflectionClass(static::class);
         $featureFilePath = str_replace('.php', '.feature', $ref->getFileName());
@@ -29,13 +34,6 @@ trait HasBehatFeature
             return static::provideBehatFeature(static::parseBehatFeature(file_get_contents($featureFilePath)));
         }
         // If no .feature file is found, we check for the FeatureFile attribute
-        foreach ($ref->getAttributes() as $attribute) {
-            if ($attribute->getName() === FeatureFile::class) {
-                /** @var FeatureFile $instance */
-                $instance = $attribute->newInstance();
-                $featureFilePath = $instance->filePath;
-            }
-        }
         if ($featureFilePath) {
             $feature = static::parseBehatFeature(file_get_contents($featureFilePath));
 

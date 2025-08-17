@@ -9,6 +9,7 @@ use League\OpenAPIValidation\PSR7\Exception\Validation\AddressValidationFailed;
 use League\OpenAPIValidation\Schema\Exception\KeywordMismatch;
 use PHPUnit\Framework\TestCase as PHPunit;
 use Xentral\LaravelTesting\OpenApi\Attributes\SchemaFile;
+use Xentral\LaravelTesting\Utils;
 
 trait ValidatesOpenApiSpec
 {
@@ -16,18 +17,11 @@ trait ValidatesOpenApiSpec
 
     protected function getOpenApiSpecPath(): string
     {
-        $schemaFilePath = null;
-        $ref = new \ReflectionClass(static::class);
-        foreach ($ref->getAttributes() as $attribute) {
-            if ($attribute->getName() === SchemaFile::class) {
-                /** @var SchemaFile $instance */
-                $instance = $attribute->newInstance();
-                $schemaFilePath = $instance->filePath;
-            }
-        }
-        if (! $schemaFilePath) {
+        $schemaFile = Utils::getAttribute(static::class, SchemaFile::class);
+        if (! $schemaFile instanceof SchemaFile) {
             throw new \RuntimeException('No schema file found. Please add a SchemaFile attribute on your test class.');
         }
+        $schemaFilePath = $schemaFile->filePath;
         if (! str_starts_with($schemaFilePath, '/')) {
             $schemaFilePath = base_path($schemaFilePath);
         }
