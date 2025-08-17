@@ -62,7 +62,6 @@
         "rector": "vendor/bin/rector",
         "lint": [
             "@php vendor/bin/pint",
-            "@php vendor/bin/phpstan analyse --verbose --ansi",
             "@php vendor/bin/rector"
         ],
         "test": [
