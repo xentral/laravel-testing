@@ -3,7 +3,7 @@
         "laravel-boost": {
             "command": "php",
             "args": [
-                "./vendor/bin/testbench",
+                "./artisan",
                 "boost:mcp"
             ]
         }
