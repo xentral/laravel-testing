@@ -131,7 +131,6 @@ class BehatMatcherFinder
             $refObj = new \ReflectionObject($traverser);
             foreach ($refObj->getProperties() as $prop) {
                 if ($prop->getName() === 'visitors') {
-                    $prop->setAccessible(true);
                     $visitors = $prop->getValue($traverser);
                     foreach ($visitors as $v) {
                         if (property_exists($v, 'collected')) {
