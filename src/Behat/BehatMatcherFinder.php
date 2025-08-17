@@ -23,29 +23,33 @@ class BehatMatcherFinder
         $behatMatches = [];
 
         foreach (self::findPhpFqcnsRecursively($folder) as $class) {
-            $reflection = new \ReflectionClass('\\'.$class);
+            try {
+                $reflection = new \ReflectionClass($class);
 
-            foreach ($reflection->getMethods() as $method) {
-                /** @var \ReflectionAttribute[] $stepAttributes */
-                $stepAttributes = [
-                    ...$method->getAttributes(Given::class),
-                    ...$method->getAttributes(When::class),
-                    ...$method->getAttributes(Then::class),
-                ];
-                if (empty($stepAttributes)) {
-                    continue;
+                foreach ($reflection->getMethods() as $method) {
+                    /** @var \ReflectionAttribute[] $stepAttributes */
+                    $stepAttributes = [
+                        ...$method->getAttributes(Given::class),
+                        ...$method->getAttributes(When::class),
+                        ...$method->getAttributes(Then::class),
+                    ];
+                    if (empty($stepAttributes)) {
+                        continue;
+                    }
+                    if (count($stepAttributes) > 1) {
+                        throw new \Exception("Method {$method->getName()} has more than one step attribute");
+                    }
+                    /** @var Definition $stepInstance */
+                    $matcher = $stepAttributes[0]->newInstance();
+                    $examples = [];
+                    foreach ($method->getAttributes(Example::class) as $exampleAttribute) {
+                        /** @var Example $exampleInstance */
+                        $examples[] = $exampleAttribute->newInstance();
+                    }
+                    $behatMatches[] = new BehatMatcher($stepAttributes[0]->getName(), $matcher, $examples, $class, $method->getName(), $reflection->getFileName());
                 }
-                if (count($stepAttributes) > 1) {
-                    throw new \Exception("Method {$method->getName()} has more than one step attribute");
-                }
-                /** @var Definition $stepInstance */
-                $matcher = $stepAttributes[0]->newInstance();
-                $examples = [];
-                foreach ($method->getAttributes(Example::class) as $exampleAttribute) {
-                    /** @var Example $exampleInstance */
-                    $examples[] = $exampleAttribute->newInstance();
-                }
-                $behatMatches[] = new BehatMatcher($stepAttributes[0]->getName(), $matcher, $examples, $class, $method->getName(), $reflection->getFileName());
+            } catch (\Throwable) {
+                continue;
             }
         }
 

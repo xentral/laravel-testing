@@ -19,7 +19,7 @@ test('all example attributes match their declared matchers', function (BehatMatc
                 ->toBe($pattern, "Step text should exactly match pattern for {$matcher->className}::{$matcher->methodName}");
         }
     }
-})->with(array_map(fn (BehatMatcher $matcher) => [$matcher], BehatMatcherFinder::find(dirname(__DIR__, 3).'/src')));
+})->with(fn () => array_map(fn (BehatMatcher $matcher) => [$matcher], BehatMatcherFinder::find(dirname(__DIR__, 3).'/src')));
 
 test('regex pattern matching works correctly', function () {
     // Test that step text matches pattern
