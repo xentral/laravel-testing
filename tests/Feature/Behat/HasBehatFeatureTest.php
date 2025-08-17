@@ -2,6 +2,7 @@
 
 namespace Xentral\LaravelTesting\Tests\Feature\Behat;
 
+use Illuminate\Database\Eloquent\Factories\Factory;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Workbench\App\Models\TestModel;
 use Xentral\LaravelTesting\Behat\Traits\HasBehatFeature;
@@ -18,7 +19,7 @@ class HasBehatFeatureTest extends TestCase
         $this->executeScenario($scenario, $feature);
     }
 
-    public function getTestModelFactory()
+    public function getTestModelFactory(): Factory
     {
         return TestModel::factory();
     }
