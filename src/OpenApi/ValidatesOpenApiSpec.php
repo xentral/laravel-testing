@@ -15,18 +15,32 @@ trait ValidatesOpenApiSpec
 {
     use ValidatesOpenApiSpecBase;
 
+    protected ?string $schemaFilePath = null;
+
+    public function schemaFilePath(string $schemaFilePath): self
+    {
+        $this->schemaFilePath = $schemaFilePath;
+
+        return $this;
+    }
+
     protected function getOpenApiSpecPath(): string
     {
+        if ($this->schemaFilePath) {
+            $schemaFilePath = $this->schemaFilePath;
+            if (! str_starts_with($schemaFilePath, '/')) {
+                $schemaFilePath = config('testing.openapi.schema_base_path').'/'.$schemaFilePath;
+            }
+
+            return $schemaFilePath;
+        }
         $schemaFile = Utils::getAttribute(static::class, SchemaFile::class);
         if (! $schemaFile instanceof SchemaFile) {
-            throw new \RuntimeException('No schema file found. Please add a SchemaFile attribute on your test class.');
+            return config('testing.openapi.default_schema');
         }
         $schemaFilePath = $schemaFile->filePath;
         if (! str_starts_with($schemaFilePath, '/')) {
-            $schemaFilePath = base_path($schemaFilePath);
-        }
-        if (! file_exists($schemaFilePath)) {
-            throw new \RuntimeException("Schema file not found: {$schemaFilePath}");
+            $schemaFilePath = config('testing.openapi.schema_base_path').'/'.$schemaFilePath;
         }
 
         return $schemaFilePath;

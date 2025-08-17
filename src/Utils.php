@@ -5,8 +5,8 @@ namespace Xentral\LaravelTesting;
 class Utils
 {
     /**
-     * @param string<class-string> $className
-     * @param string<class-string> $attributeName
+     * @param  string<class-string>  $className
+     * @param  string<class-string>  $attributeName
      */
     public static function getAttribute(string $className, string $attributeName): mixed
     {
@@ -14,6 +14,7 @@ class Utils
         foreach ($ref->getAttributes($attributeName) as $attribute) {
             return $attribute->newInstance();
         }
+
         return null;
     }
 }
