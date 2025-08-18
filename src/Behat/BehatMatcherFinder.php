@@ -84,9 +84,7 @@ class BehatMatcherFinder
             })->values();
     }
 
-    /**
-     * @return class-string
-     */
+    /** @return class-string[] */
     private static function findPhpFqcnsRecursively(string $directory): array
     {
         $directory = rtrim($directory, DIRECTORY_SEPARATOR);

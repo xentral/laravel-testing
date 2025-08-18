@@ -64,7 +64,7 @@ class ListBehatMatchersCommand extends Command
             placeholder: 'Start typing to search...',
         );
 
-        if ($selectedPattern === null) {
+        if ($selectedPattern === '') {
             $this->info('No matcher selected.');
 
             return self::SUCCESS;
