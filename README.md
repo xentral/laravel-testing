@@ -123,6 +123,78 @@ class MyEndpointTest extends TestCase
 }
 ```
 
+#### Interactive Matcher Discovery
+
+The package includes a powerful interactive command to explore and search available Behat matchers:
+
+```bash
+php artisan xentral:list-behat-matchers
+```
+
+This command provides an interactive search interface where you can:
+- Type to search through matcher patterns and descriptions in real-time
+- Browse available matchers with their examples
+- View detailed information about each matcher including capture groups
+
+For non-interactive usage (useful in CI/CD):
+
+```bash
+php artisan xentral:list-behat-matchers --non-interactive
+```
+
+#### Adding Examples to Custom Matchers
+
+Document your custom Behat matchers with examples using the `#[Example]` attribute:
+
+```php
+<?php
+
+use Xentral\LaravelTesting\Behat\Attributes\Example;
+
+class MyCustomMatchers
+{
+    #[Given('/^I send (a|an invalid|a non-API) ([^\s]+) request to path ([^\s]+)(?:\s+(.+))?$/i')]
+    #[Example('I send a GET request to path /api/users', ['a', 'GET', '/api/users'])]
+    #[Example('I send a POST request to path /api/users with payload', ['a', 'POST', '/api/users', 'with payload'])]
+    public function iSendARequest($type, $method, $path, $modifiers = null)
+    {
+        // Implementation
+    }
+}
+```
+
+The `Example` attribute accepts:
+- `stepText`: The exact step text that should match the pattern
+- `matches` (optional): Array of expected capture groups from the regex
+- `data` (optional): Additional metadata for the example
+
+#### Testing Your Matchers
+
+Ensure your custom matchers work correctly by adding tests using the `BehatMatcherChecker`:
+
+```php
+<?php
+
+use Xentral\LaravelTesting\Behat\BehatMatcherChecker;
+use Xentral\LaravelTesting\Behat\BehatMatcherFinder;
+use Xentral\LaravelTesting\Behat\Dto\BehatMatcher;
+
+test('all example attributes match their declared matchers', function (BehatMatcher $matcher) {
+    BehatMatcherChecker::check($matcher);
+})->with(
+    fn () => array_map(
+        fn (BehatMatcher $matcher) => [$matcher],
+        BehatMatcherFinder::find('path/to/your/matchers'),
+    )
+);
+```
+
+This test will:
+- Find all matchers in the specified directory
+- Validate that each `#[Example]` attribute matches its corresponding matcher pattern
+- Verify that capture groups are correctly extracted
+- Ensure regex patterns are valid
+
 ### Qase Test Run Reporter
 
 Integrate with Qase.io for comprehensive test reporting and management.  
