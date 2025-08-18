@@ -3,6 +3,7 @@
 namespace Xentral\LaravelTesting\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Xentral\LaravelTesting\Behat\BehatMatcherFinder;
 use Xentral\LaravelTesting\Behat\Dto\BehatMatcher;
@@ -15,15 +16,15 @@ class ListBehatMatchersCommand extends Command
 
     public function handle(): int
     {
-        $folder = $this->option('folder') ?? config('testing.behat.matcher_lookup_path');
         $this->info('Behat Matchers and Examples');
         $this->line('');
 
-        $matchers = collect([
-            ...BehatMatcherFinder::find($folder),
-            // Automatically include the traits from the package
-            ...BehatMatcherFinder::find(dirname(__DIR__, 2).'/Behat/Traits'),
-        ])->unique(fn (BehatMatcher $matcher) => $matcher->definition->getPattern());
+        $folders = $this->option('folder')
+            ? [$this->option('folder')]
+            : [config('testing.behat.matcher_lookup_path'), dirname(__DIR__, 2).'/Behat/Traits'];
+
+        $cacheKey = 'behat_matchers_'.md5(implode(',', $folders));
+        $matchers = Cache::remember($cacheKey, 60, fn () => collect(BehatMatcherFinder::find(...$folders)));
 
         if ($filter = $this->argument('filter')) {
             $matchers = $matchers->filter(fn (BehatMatcher $matcher) => Str::contains($matcher->definition->getPattern(), $filter));

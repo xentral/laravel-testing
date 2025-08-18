@@ -6,6 +6,7 @@ use Behat\Step\Definition;
 use Behat\Step\Given;
 use Behat\Step\Then;
 use Behat\Step\When;
+use Illuminate\Support\Collection;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Trait_;
@@ -18,42 +19,69 @@ use Xentral\LaravelTesting\Behat\Dto\BehatMatcher;
 
 class BehatMatcherFinder
 {
-    public static function find(string $folder): array
+    public static function find(string ...$folders): array
     {
-        $behatMatches = [];
+        $behatMatches = collect();
 
-        foreach (self::findPhpFqcnsRecursively($folder) as $class) {
-            try {
-                $reflection = new \ReflectionClass($class);
+        foreach ($folders as $folder) {
+            foreach (self::findPhpFqcnsRecursively($folder) as $class) {
+                try {
+                    $reflection = new \ReflectionClass($class);
 
-                foreach ($reflection->getMethods() as $method) {
-                    /** @var \ReflectionAttribute[] $stepAttributes */
-                    $stepAttributes = [
-                        ...$method->getAttributes(Given::class),
-                        ...$method->getAttributes(When::class),
-                        ...$method->getAttributes(Then::class),
-                    ];
-                    if (empty($stepAttributes)) {
-                        continue;
+                    foreach ($reflection->getMethods() as $method) {
+                        /** @var \ReflectionAttribute[] $stepAttributes */
+                        $stepAttributes = [
+                            ...$method->getAttributes(Given::class),
+                            ...$method->getAttributes(When::class),
+                            ...$method->getAttributes(Then::class),
+                        ];
+                        if (empty($stepAttributes)) {
+                            continue;
+                        }
+                        if (count($stepAttributes) > 1) {
+                            throw new \Exception("Method {$method->getName()} has more than one step attribute");
+                        }
+                        /** @var Definition $matcher */
+                        $matcher = $stepAttributes[0]->newInstance();
+                        $examples = array_map(
+                            fn (\ReflectionAttribute $example) => $example->newInstance(),
+                            $method->getAttributes(Example::class),
+                        );
+                        $behatMatches->push(new BehatMatcher(
+                            $stepAttributes[0]->getName(),
+                            $matcher,
+                            $examples,
+                            $class,
+                            $method->getName(),
+                            $reflection->getFileName(),
+                        ));
                     }
-                    if (count($stepAttributes) > 1) {
-                        throw new \Exception("Method {$method->getName()} has more than one step attribute");
-                    }
-                    /** @var Definition $stepInstance */
-                    $matcher = $stepAttributes[0]->newInstance();
-                    $examples = [];
-                    foreach ($method->getAttributes(Example::class) as $exampleAttribute) {
-                        /** @var Example $exampleInstance */
-                        $examples[] = $exampleAttribute->newInstance();
-                    }
-                    $behatMatches[] = new BehatMatcher($stepAttributes[0]->getName(), $matcher, $examples, $class, $method->getName(), $reflection->getFileName());
+                } catch (\Throwable) {
+                    continue;
                 }
-            } catch (\Throwable) {
-                continue;
             }
         }
 
-        return $behatMatches;
+        return self::unique($behatMatches)->all();
+    }
+
+    private static function unique(Collection $matchers): Collection
+    {
+        return $matchers
+            ->groupBy(fn (BehatMatcher $matcher) => $matcher->definition->getPattern())
+            ->map(function ($group) {
+                $first = $group->first();
+                $mergedExamples = $group->flatMap(fn (BehatMatcher $matcher) => $matcher->examples)->all();
+
+                return new BehatMatcher(
+                    $first->keyword,
+                    $first->definition,
+                    $mergedExamples,
+                    $first->className,
+                    $first->methodName,
+                    $first->filePath,
+                );
+            })->values();
     }
 
     /**
@@ -107,7 +135,7 @@ class BehatMatcherFinder
 
                 public function __construct(public array &$collected) {}
 
-                public function enterNode(Node $node)
+                public function enterNode(Node $node): null
                 {
                     if ($node instanceof Class_ || $node instanceof Trait_) {
                         // NameResolver populates namespacedName for ClassLike nodes.
@@ -119,9 +147,11 @@ class BehatMatcherFinder
                     return null;
                 }
 
-                public function afterTraverse(array $nodes)
+                public function afterTraverse(array $nodes): null
                 {
                     $this->collected = array_merge($this->collected, $this->out);
+
+                    return null;
                 }
             });
 
@@ -133,8 +163,7 @@ class BehatMatcherFinder
                 if ($prop->getName() === 'visitors') {
                     $visitors = $prop->getValue($traverser);
                     foreach ($visitors as $v) {
-                        if (property_exists($v, 'collected')) {
-                            /** @var array $v ->collected */
+                        if (property_exists($v, 'collected') && is_array($v->collected)) {
                             $fqcns = array_merge($fqcns, $v->collected);
                         }
                     }
