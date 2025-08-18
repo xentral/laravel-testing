@@ -24,6 +24,7 @@
         "illuminate/validation": "^10.0|^11.0|^12.0",
         "jonathanjfshaw/phpunitbehat": "^0.21.0",
         "kirschbaum-development/laravel-openapi-validator": "^1.0",
+        "laravel/prompts": "^0.3.6",
         "phpunit/phpunit": "^10.5 || ^11.5",
         "qase/phpunit-reporter": "^2.1",
         "rector/rector": "^2.1"

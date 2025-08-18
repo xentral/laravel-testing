@@ -3,16 +3,19 @@
 namespace Xentral\LaravelTesting\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Xentral\LaravelTesting\Behat\BehatMatcherFinder;
 use Xentral\LaravelTesting\Behat\Dto\BehatMatcher;
 
+use function Laravel\Prompts\search;
+
 class ListBehatMatchersCommand extends Command
 {
-    protected $signature = 'xentral:list-behat-matchers {filter?} {--folder= : Filter in the matcher patterns}';
+    protected $signature = 'xentral:list-behat-matchers {--folder= : Folder to search for matchers} {--non-interactive : Skip interactive search}';
 
-    protected $description = 'List all Behat matchers and their examples';
+    protected $description = 'Interactively search and list Behat matchers and their examples';
 
     public function handle(): int
     {
@@ -26,16 +29,60 @@ class ListBehatMatchersCommand extends Command
         $cacheKey = 'behat_matchers_'.md5(implode(',', $folders));
         $matchers = Cache::remember($cacheKey, 60, fn () => collect(BehatMatcherFinder::find(...$folders)));
 
-        if ($filter = $this->argument('filter')) {
-            $matchers = $matchers->filter(fn (BehatMatcher $matcher) => Str::contains($matcher->definition->getPattern(), $filter));
-        }
-
         if ($matchers->isEmpty()) {
             $this->warn('No Behat matchers found.');
 
             return self::SUCCESS;
         }
 
+        if ($this->option('non-interactive')) {
+            return $this->displayAllMatchers($matchers);
+        }
+
+        return $this->runInteractiveSearch($matchers);
+    }
+
+    private function runInteractiveSearch(Collection $matchers): int
+    {
+        $matcherOptions = $matchers->mapWithKeys(function (BehatMatcher $matcher) {
+            $keyword = Str::afterLast($matcher->keyword, '\\');
+            $className = basename($matcher->className);
+            $label = "{$keyword}: {$matcher->definition->getPattern()} ({$className}::{$matcher->methodName})";
+
+            return [$matcher->definition->getPattern() => $label];
+        })->all();
+
+        $selectedPattern = search(
+            label: 'Search for a Behat matcher:',
+            options: fn (string $value) => array_filter(
+                $matcherOptions,
+                fn ($label, $pattern) => empty($value) ||
+                    Str::contains($pattern, $value, true) ||
+                    Str::contains($label, $value, true),
+                ARRAY_FILTER_USE_BOTH
+            ),
+            placeholder: 'Start typing to search...',
+        );
+
+        if ($selectedPattern === null) {
+            $this->info('No matcher selected.');
+
+            return self::SUCCESS;
+        }
+
+        $selectedMatcher = $matchers->first(
+            fn (BehatMatcher $matcher) => $matcher->definition->getPattern() === $selectedPattern
+        );
+
+        if ($selectedMatcher) {
+            $this->displayMatcher($selectedMatcher);
+        }
+
+        return self::SUCCESS;
+    }
+
+    private function displayAllMatchers(Collection $matchers): int
+    {
         foreach ($matchers as $matcher) {
             $this->displayMatcher($matcher);
             $this->line('');
