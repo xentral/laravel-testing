@@ -20,6 +20,8 @@ class CustomQaseReporter implements QaseReporterInterface
 
     private ?string $currentKey = null;
 
+    private bool $isStarted = false;
+
     private function __construct(private readonly AttributeParserInterface $attributeParser, private readonly ReporterInterface $reporter) {}
 
     public static function getInstance(AttributeParserInterface $attributeParser, ReporterInterface $reporter): CustomQaseReporter
@@ -53,11 +55,16 @@ class CustomQaseReporter implements QaseReporterInterface
 
     public function startTestRun(): void
     {
-        $this->reporter->startRun();
+        // We don't start the run here, because we only want to start it if we have found tests we need to report
+        // Start is happening in startTest method
+        // $this->reporter->startRun();
     }
 
     public function completeTestRun(): void
     {
+        if (! $this->isStarted) {
+            return;
+        }
         $this->reporter->completeRun();
     }
 
@@ -75,6 +82,11 @@ class CustomQaseReporter implements QaseReporterInterface
 
         if (empty($metadata->suites)) {
             return;
+        }
+
+        if (! $this->isStarted) {
+            $this->reporter->startRun();
+            $this->isStarted = true;
         }
 
         foreach ($metadata->suites as $suite) {

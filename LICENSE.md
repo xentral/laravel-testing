@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) Manuel Christlieb
+Copyright (c) Xentral ERP Software GmbH
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
