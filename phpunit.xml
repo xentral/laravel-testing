@@ -14,6 +14,9 @@
             <directory>src</directory>
         </include>
     </source>
+    <extensions>
+        <bootstrap class="Xentral\LaravelTesting\Qase\XentralQaseExtension"/>
+    </extensions>
     <php>
         <env name="APP_KEY" value="base64:/XJzAh1UR4m3wpTPoGb3sdWTO8lhrhrICWv67R1MR80="/>
         <env name="CACHE_STORE" value="array"/>

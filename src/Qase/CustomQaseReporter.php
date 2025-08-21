@@ -1,6 +1,5 @@
 <?php
 declare(strict_types=1);
-
 namespace Xentral\LaravelTesting\Qase;
 
 use Illuminate\Support\Str;
@@ -19,8 +18,6 @@ class CustomQaseReporter implements QaseReporterInterface
     private array $testResults = [];
 
     private ?string $currentKey = null;
-
-    private bool $isStarted = false;
 
     private function __construct(private readonly AttributeParserInterface $attributeParser, private readonly ReporterInterface $reporter) {}
 
@@ -55,16 +52,11 @@ class CustomQaseReporter implements QaseReporterInterface
 
     public function startTestRun(): void
     {
-        // We don't start the run here, because we only want to start it if we have found tests we need to report
-        // Start is happening in startTest method
-        // $this->reporter->startRun();
+        $this->reporter->startRun();
     }
 
     public function completeTestRun(): void
     {
-        if (! $this->isStarted) {
-            return;
-        }
         $this->reporter->completeRun();
     }
 
@@ -82,11 +74,6 @@ class CustomQaseReporter implements QaseReporterInterface
 
         if (empty($metadata->suites)) {
             return;
-        }
-
-        if (! $this->isStarted) {
-            $this->reporter->startRun();
-            $this->isStarted = true;
         }
 
         foreach ($metadata->suites as $suite) {
