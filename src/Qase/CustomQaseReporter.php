@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 namespace Xentral\LaravelTesting\Qase;
 
 use Illuminate\Support\Str;
