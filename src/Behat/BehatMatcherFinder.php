@@ -69,9 +69,14 @@ class BehatMatcherFinder
     {
         return $matchers
             ->groupBy(fn (BehatMatcher $matcher) => $matcher->definition->getPattern())
-            ->map(function ($group) {
+            ->map(function (Collection $group) {
+                /** @var BehatMatcher $first */
                 $first = $group->first();
-                $mergedExamples = $group->flatMap(fn (BehatMatcher $matcher) => $matcher->examples)->all();
+
+                $mergedExamples = $group
+                    ->flatMap(fn (BehatMatcher $matcher) => $matcher->examples)
+                    ->unique('stepText')
+                    ->all();
 
                 return new BehatMatcher(
                     $first->keyword,
