@@ -224,6 +224,6 @@ class CustomQaseReporter implements QaseReporterInterface
 
     private function getThread(): string
     {
-        return $_ENV['TEST_TOKEN'] ?? 'default';
+        return \Illuminate\Support\Env::get('TEST_TOKEN', 'default');
     }
 }
