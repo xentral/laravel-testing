@@ -48,7 +48,7 @@ trait EnrichesBehatStepData
         if (is_string($data)) {
             // only replace when the whole string is a single placeholder like {{foo.bar}}
             if (preg_match('/^\{\{\s*([a-zA-Z0-9_]+(?:\.[^\}\s]+)*)\s*\}\}$/', $data, $m) === 1) {
-                return $this->resolvePlaceholder($m[1]);
+                return (string) $this->resolvePlaceholder($m[1]);
             }
 
             return $data;
