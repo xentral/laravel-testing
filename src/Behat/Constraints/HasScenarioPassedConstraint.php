@@ -8,9 +8,12 @@ use Behat\Behat\Context\Snippet\Generator\FixedContextIdentifier;
 use Behat\Behat\Output\Node\Printer\Helper\ResultToStringConverter;
 use Behat\Behat\Tester\Result\ExecutedStepResult;
 use Behat\Behat\Tester\Result\StepResult;
+use Behat\Gherkin\Node\ScenarioNode;
+use Behat\Testwork\Call\Handler\RuntimeCallHandler;
 use Behat\Testwork\Tester\Result\ExceptionResult;
 use Exception;
 use PHPUnit\Framework\Constraint\Constraint;
+use Xentral\LaravelTesting\Behat\Environment\PHPUnitEnvironment;
 
 class HasScenarioPassedConstraint extends Constraint
 {
@@ -32,15 +35,15 @@ class HasScenarioPassedConstraint extends Constraint
     TPL;
 
     /**
-     * @param  \Behat\Gherkin\Node\ScenarioNode|null  $scenario
+     * @param  ScenarioNode|null  $scenario
      * @param  array  $stepResults
      * @param  string  $scenarioCallHandler
-     * @param  \Xentral\LaravelTesting\Behat\Environment\PHPUnitEnvironment  $environment
+     * @param  PHPUnitEnvironment  $environment
      * @param  mixed  $snippetGenerator
      */
     public function __construct(protected $scenario = null, protected $stepResults = [], $scenarioCallHandler = '', protected $snippetGenerator = null, protected $environment = null)
     {
-        $this->scenarioCallHandler = empty($scenarioCallHandler) ? \Behat\Testwork\Call\Handler\RuntimeCallHandler::class : $scenarioCallHandler;
+        $this->scenarioCallHandler = empty($scenarioCallHandler) ? RuntimeCallHandler::class : $scenarioCallHandler;
     }
 
     public function toString(): string

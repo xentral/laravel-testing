@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Xentral\LaravelTesting\Qase;
 
+use Illuminate\Support\Env;
 use Illuminate\Support\Str;
 use PHPUnit\Event\Code\TestMethod;
 use Qase\PhpCommons\Interfaces\ReporterInterface;
@@ -224,6 +225,6 @@ class CustomQaseReporter implements QaseReporterInterface
 
     private function getThread(): string
     {
-        return \Illuminate\Support\Env::get('TEST_TOKEN', 'default');
+        return Env::get('TEST_TOKEN', 'default');
     }
 }

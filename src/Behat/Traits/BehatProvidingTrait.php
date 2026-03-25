@@ -29,10 +29,10 @@ trait BehatProvidingTrait
      *
      * @param  string  $featureString
      *                                 The text of a Behat feature.
-     * @param  \Behat\Gherkin\Keywords\ArrayKeywords|null  $keywords
-     *                                                                Keywords to be used to interpret the Behat feature.
-     * @return \Behat\Gherkin\Node\FeatureNode
-     *                                         A Behat feature.
+     * @param  ArrayKeywords|null  $keywords
+     *                                        Keywords to be used to interpret the Behat feature.
+     * @return FeatureNode
+     *                     A Behat feature.
      */
     public static function parseBehatFeature($featureString, $keywords = null): FeatureNode
     {
@@ -47,8 +47,8 @@ trait BehatProvidingTrait
      * suitable to be supplied by a phpunit data provider for
      * individual testing.
      *
-     * @param  \Behat\Gherkin\Node\FeatureNode  $feature
-     *                                                    A Behat feature.
+     * @param  FeatureNode  $feature
+     *                                A Behat feature.
      * @return array
      *               An array of scenarios, each an array of title, scenario, and feature.
      */
@@ -136,8 +136,8 @@ trait BehatProvidingTrait
      * method, where it is sometimes useful to have access to the scenario for
      * prettier troubleshooting output.
      *
-     * @return \Behat\Gherkin\Node\ScenarioInterface
-     *                                               The current scenario or example.
+     * @return ScenarioInterface
+     *                           The current scenario or example.
      */
     protected function getProvidedScenario(): ScenarioInterface
     {

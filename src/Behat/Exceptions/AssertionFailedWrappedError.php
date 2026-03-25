@@ -9,7 +9,7 @@ use PHPUnit\Framework\AssertionFailedError;
 /**
  * Allows wrapping an exception as an expectation failure.
  *
- * @see \PHPUnit\Framework\AssertionFailedError
+ * @see AssertionFailedError
  */
 class AssertionFailedWrappedError extends AssertionFailedError
 {

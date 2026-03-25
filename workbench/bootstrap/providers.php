@@ -1,8 +1,12 @@
 <?php declare(strict_types=1);
+use Laravel\Boost\BoostServiceProvider;
+use Laravel\Mcp\Server\McpServiceProvider;
+use Workbench\App\Providers\WorkbenchServiceProvider;
+use Xentral\LaravelTesting\TestingServiceProvider;
 
 return [
-    \Xentral\LaravelTesting\TestingServiceProvider::class,
-    \Workbench\App\Providers\WorkbenchServiceProvider::class,
-    \Laravel\Boost\BoostServiceProvider::class,
-    \Laravel\Mcp\Server\McpServiceProvider::class,
+    TestingServiceProvider::class,
+    WorkbenchServiceProvider::class,
+    BoostServiceProvider::class,
+    McpServiceProvider::class,
 ];

@@ -70,6 +70,6 @@ trait ValidatesOpenApiSpec
             $messages[] = 'Key: '.implode(' -> ', $previous->dataBreadCrumb()->buildChain());
         }
         $messages[] = $exception->getMessage();
-        PHPUnit::fail(implode(PHP_EOL, $messages));
+        PHPunit::fail(implode(PHP_EOL, $messages));
     }
 }

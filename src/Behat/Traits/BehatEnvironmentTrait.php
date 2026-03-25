@@ -10,7 +10,7 @@ use Xentral\LaravelTesting\Behat\Environment\PHPUnitEnvironment;
 trait BehatEnvironmentTrait
 {
     /**
-     * @var \Xentral\LaravelTesting\Behat\Environment\PHPUnitEnvironment
+     * @var PHPUnitEnvironment
      */
     protected $behatEnvironment;
 
