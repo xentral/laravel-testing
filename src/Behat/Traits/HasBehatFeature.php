@@ -2,8 +2,6 @@
 
 namespace Xentral\LaravelTesting\Behat\Traits;
 
-use PHPUnitBehat\TestTraits\BehatProvidingTrait;
-use PHPUnitBehat\TestTraits\BehatScenarioTestingTrait;
 use Xentral\LaravelTesting\Behat\Attributes\FeatureFile;
 use Xentral\LaravelTesting\Behat\BehatFeatureParser;
 use Xentral\LaravelTesting\Qase\CustomQaseReporter;
