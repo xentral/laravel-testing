@@ -6,6 +6,7 @@ use Illuminate\Support\Str;
 use Kirschbaum\OpenApiValidator\Exceptions\UnknownSpecFileTypeException;
 use Kirschbaum\OpenApiValidator\ValidatesOpenApiSpec as ValidatesOpenApiSpecBase;
 use League\OpenAPIValidation\PSR7\Exception\Validation\AddressValidationFailed;
+use League\OpenAPIValidation\PSR7\ValidatorBuilder;
 use League\OpenAPIValidation\Schema\Exception\KeywordMismatch;
 use PHPUnit\Framework\TestCase as PHPunit;
 use Xentral\LaravelTesting\OpenApi\Attributes\SchemaFile;
@@ -22,6 +23,25 @@ trait ValidatesOpenApiSpec
         $this->schemaFilePath = $schemaFilePath;
 
         return $this;
+    }
+
+    /**
+     * Overrides the base trait's builder so the parsed spec is reused across
+     * test methods within one process (see StaticallyCachedValidatorBuilder).
+     */
+    public function getOpenApiValidatorBuilder(): ValidatorBuilder
+    {
+        if (! isset($this->openApiValidatorBuilder)) {
+            $specPath = $this->getOpenApiSpecPath();
+            $builder = new StaticallyCachedValidatorBuilder($specPath);
+
+            $this->openApiValidatorBuilder = match ($this->getSpecFileType()) {
+                'json' => $builder->fromJsonFile($specPath),
+                'yaml' => $builder->fromYamlFile($specPath),
+            };
+        }
+
+        return $this->openApiValidatorBuilder;
     }
 
     protected function getOpenApiSpecPath(): string
