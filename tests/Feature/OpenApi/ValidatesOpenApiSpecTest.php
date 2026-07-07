@@ -2,12 +2,17 @@
 
 use League\OpenAPIValidation\PSR7\Exception\NoPath;
 use Workbench\App\Models\TestModel;
+use Xentral\LaravelTesting\OpenApi\StaticallyCachedValidatorBuilder;
 use Xentral\LaravelTesting\OpenApi\ValidatesOpenApiSpec;
 
 uses(ValidatesOpenApiSpec::class);
 
 beforeEach(function () {
     $this->schemaFilePath(dirname(__DIR__, 2).'/schemas/test-models.json');
+});
+
+test('validation runs through the statically cached validator builder', function () {
+    expect($this->getOpenApiValidatorBuilder())->toBeInstanceOf(StaticallyCachedValidatorBuilder::class);
 });
 
 test('endpoint returns valid response with empty data', function () {
