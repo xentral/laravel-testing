@@ -17,7 +17,7 @@
   "require": {
     "php": "^8.2 || ^8.3",
     "behat/behat": "^3.14",
-    "driftingly/rector-laravel": "^2.0",
+    "driftingly/rector-laravel": "^2.7",
     "illuminate/console": "^10.0|^11.0|^12.0",
     "illuminate/http": "^10.0|^11.0|^12.0",
     "illuminate/support": "^10.0|^11.0|^12.0",
@@ -26,7 +26,7 @@
     "laravel/prompts": "^0.1.18|^0.2.0|^0.3.0",
     "phpunit/phpunit": "^10.5 || ^11.5 || ^12.5",
     "qase/phpunit-reporter": "^2.1",
-    "rector/rector": "^2.1 <2.6.4"
+    "rector/rector": "^2.1"
   },
   "require-dev": {
     "larastan/larastan": "^3.5",
