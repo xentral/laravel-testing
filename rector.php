@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
+use RectorLaravel\Rector\FuncCall\UnlinkFuncCallToFileFacadeDeleteRector;
 use RectorLaravel\Set\LaravelSetList;
 
 return RectorConfig::configure()
@@ -14,4 +15,7 @@ return RectorConfig::configure()
     ->withSets([
         LaravelSetList::LARAVEL_CODE_QUALITY,
         LaravelSetList::LARAVEL_110,
+    ])
+    ->withSkip([
+        UnlinkFuncCallToFileFacadeDeleteRector::class,
     ]);
