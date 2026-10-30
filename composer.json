@@ -15,7 +15,7 @@
     }
   ],
   "require": {
-    "php": "^8.2 || ^8.3",
+    "php": "^8.3",
     "behat/behat": "^3.14",
     "driftingly/rector-laravel": "^2.7",
     "illuminate/console": "^10.0|^11.0|^12.0",
