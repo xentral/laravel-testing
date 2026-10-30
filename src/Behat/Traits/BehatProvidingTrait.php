@@ -73,9 +73,7 @@ trait BehatProvidingTrait
      */
     protected static function getBehatKeywords($keywords = null): ArrayKeywords
     {
-        if (is_null($keywords)) {
-            $keywords = static::getBehatDefaultKeywords();
-        }
+        $keywords ??= static::getBehatDefaultKeywords();
 
         return $keywords;
     }

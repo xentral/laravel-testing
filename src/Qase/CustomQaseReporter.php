@@ -25,9 +25,7 @@ class CustomQaseReporter implements QaseReporterInterface
 
     public static function getInstance(AttributeParserInterface $attributeParser, ReporterInterface $reporter): CustomQaseReporter
     {
-        if (! isset(self::$instance)) {
-            self::$instance = new CustomQaseReporter($attributeParser, $reporter);
-        }
+        self::$instance ??= new CustomQaseReporter($attributeParser, $reporter);
 
         return self::$instance;
     }
